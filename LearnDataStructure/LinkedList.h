@@ -250,16 +250,19 @@ public:
 
 	void reverse()
 	{
-		Node* p = C;
-		for (;;)
+		if (C)
 		{
-			std::swap(p->next, p->prev);
-			if (p == E)
+			Node* p = C;
+			for (;;)
 			{
-				std::swap(C, E);
-				break;
+				std::swap(p->next, p->prev);
+				if (p == E)
+				{
+					std::swap(C, E);
+					break;
+				}
+				p = p->prev;
 			}
-			p = p->prev;
 		}
 	}
 	int size()
@@ -325,7 +328,7 @@ public:
 			swap(iter.ptr, iter.ptr->next);
 			++iter;
 		}
-		if(ringed&& len%2)
+		if (ringed && len % 2)
 		{
 			iter.ptr->next = this->begin().ptr;
 		}

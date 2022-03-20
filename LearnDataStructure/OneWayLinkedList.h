@@ -10,6 +10,7 @@ class OneWayLinkedList
 		T Data{};
 		Node* next{};
 	};
+	int pointerOffset = offsetof(Node, Node::next);
 	Node* C{};//始
 	Node* E{};//末
 
@@ -17,6 +18,35 @@ class OneWayLinkedList
 	bool ringed = false;//环
 
 	//内部插入方法//向后插入
+	T* insert_inlist(const T& Data, Node*& node)
+	{
+		Node* newnode = new Node;
+		newnode->Data = Data;
+		if (C)
+		{
+			//链表插入
+			if (node)
+			{
+				newnode->next = node;
+				node = newnode;
+				if (&node == &E->next) E = newnode;
+			}
+			else
+			{
+				newnode->next = C;
+				C = newnode;
+			}
+			len++;
+		}
+		else
+		{
+			//创建第一节点
+			newnode->next = nullptr;
+			C = E = newnode;
+			len = 1;
+		}
+		return &newnode->Data;
+	}
 	T* insert(const T& Data, Node* p_node)
 	{
 		Node* newnode = new Node;
@@ -72,61 +102,81 @@ class OneWayLinkedList
 		std::swap(a, b);
 		std::swap(a->next, b->next);
 	}
+
 public:
 	//迭代器
 	class iterator : public std::iterator<std::forward_iterator_tag, T>
 	{
 		bool start = true;
+		Node** _ptr{};
 	public:
-		Node* prev_ptr{};
-		Node* ptr{};
-		iterator(Node* p_prev = nullptr, Node* p = nullptr)
-		{
-			prev_ptr = p_prev;
-			ptr = p;
-			if (prev_ptr && p)
-				ptr = prev_ptr->next;//!!
 
+		iterator(Node** _ptr_)
+		{
+			_ptr = _ptr_;
+		}
+		//使用前一节点获得迭代器
+		iterator(Node* ptr_prev)
+		{
+			if (ptr_prev)
+				_ptr = &ptr_prev->next;
+			else _ptr = nullptr;
 		}
 		//使用数据指针获取迭代器
-		//p_prev != nullptr
-		iterator(T* p_prev)
+		iterator(T* p_prev) :iterator((Node*)p_prev) {}
+
+		Node*& ptr()
 		{
-			prev_ptr = (Node*)p_prev;
-			ptr = prev_ptr->next;
+			return *_ptr;
 		}
+		Node* prev_ptr(int pointerOffset)
+		{
+			return (Node*)((char*)_ptr - pointerOffset);
+		}
+		operator Node*& ()
+		{
+			return *_ptr;
+		}
+		bool IsNull()
+		{
+			if (_ptr)return *_ptr;
+			else return false;
+		}
+		bool IsPreNode(Node* p_prev)
+		{
+			if (&p_prev->next == _ptr) return true;
+			else return false;
+		}
+
 		T& operator*()
 		{
-			return ptr->Data;
+			return (*_ptr)->Data;
 		}
 		bool operator ==(const iterator& iter)
 		{
-			return (ptr == iter.ptr);
+			return (_ptr == iter._ptr);
 		}
 		bool operator !=(const iterator& iter)
 		{
-			if (!start || !ptr)return (ptr != iter.ptr);
+			if (!start || !_ptr || !ptr())return (_ptr != iter._ptr);
 			else { start = false; return true; }
 		}
 		iterator& operator++()
 		{
-			prev_ptr = ptr;
-			ptr = ptr->next;
+			_ptr = &(*_ptr)->next;
 			return *this;
 		}
-		iterator& operator++(int)
+		iterator operator++(int)
 		{
 			iterator temp = *this;
-			prev_ptr = ptr;
-			ptr = ptr->next;
+			_ptr = &(*_ptr)->next;
 			return temp;
 		}
 		iterator& operator+(int n)
 		{
 			for (int i = 0; i < n; i++)
 			{
-				prev_ptr = ptr;
-				ptr = ptr->next;
+				_ptr = &(*_ptr)->next;
 			}
 			return *this;
 		}
@@ -134,13 +184,14 @@ public:
 
 	iterator begin()
 	{
-		if (ringed)return iterator( E,C );
-		else return iterator{ nullptr,C };
+		if (ringed)return iterator(E);
+		else return iterator(&C);
 	}
 	iterator end()
 	{
-		if (ringed) return iterator(E, C);
-		return iterator { E,nullptr };
+		if (ringed) return iterator(E);
+		if (len)return iterator(E);
+		else return iterator(&C);
 	}
 	T& operator[](int i)
 	{
@@ -167,78 +218,79 @@ public:
 	{
 		return insert(Data, (Node*)p);
 	}
-	//用迭代器插入
-	T* insert(const T& Data, const iterator& iter)
+	T* insert(const T& Data, iterator& iter)
 	{
-		return insert(Data, iter.ptr);
+		return insert(Data, iter.ptr());
 	}
-	T* append(const T& Data, const iterator& iter = iterator{})
+	//用迭代器插入//向前插入
+	T* append(const T& Data, iterator& iter)
+	{
+		return insert_inlist(Data, iter.ptr());
+	}
+	//末增
+	T* append(const T& Data)
 	{
 		return insert(Data, E);
 	}
 
 
 	//使用迭代器删除
-	iterator remove(const iterator& iter)
+	void remove(iterator& iter)
 	{
 		//空操作
-		if (!iter.ptr) return iter;
+		if (!iter.IsNull()) return;
 		//删除首节点
-		if (iter.prev_ptr == nullptr)
+		if (iter.ptr() == C && ringed && iter != begin())
 		{
-			if(ringed) std::cerr << "can no delete headNode with out prev_ptr in ring";
-			Node* temp = C->next;
-			delete C;
-			C = temp;
-			len--;
-			if (!len) { C = E = nullptr; ringed = false; }
-			return begin();
+			iter = begin();
+			std::cout << "can no delete headNode with headptr in ring\n auto transfer to ring begin\n";
 		}
-		Node* temp = iter.ptr->next;
-		if (iter.ptr == C) C = temp;
-		if (iter.ptr == E) E = iter.prev_ptr;
-		delete iter.ptr;
-		iter.prev_ptr->next = temp;
+
+		Node* temp = iter.ptr()->next;
+		if (iter.ptr() == E) E = iter.prev_ptr(pointerOffset);
+		delete iter.ptr();
+		iter.ptr() = temp;
 		len--;
-		if (!len) {C = E = nullptr; ringed = false;}
-		return iterator(iter.prev_ptr);
+		if (!len) { C = E = nullptr; ringed = false; }
 	}
 	//使用数据指针删除//删除下一节点
 	void remove(T* Data_prev)
 	{
-		remove(iterator(Data_prev));
+		iterator iter(Data_prev);
+		remove(iter);
 	}
 	void setEmpty()
 	{
 		while (C)
 		{
-			remove(begin());
+			iterator iter = begin();
+			remove(iter);
 		}
 	}
 	~OneWayLinkedList()
 	{
-		while (C)
-		{
-			remove(begin());
-		}
+		setEmpty();
 	}
 
 
 	void reverse()
 	{
-		Node* p = C;
-		Node* np = C;
-		if (C) np = p->next;
-		p->next = nullptr;
-		while (np)
+		if (C)
 		{
-			Node* temp = np->next;
-			np->next = p;
-			p = np;
-			np = temp;
+			Node* p = C;
+			Node* np = C;
+			if (C) np = p->next;
+			p->next = nullptr;
+			while (np)
+			{
+				Node* temp = np->next;
+				np->next = p;
+				p = np;
+				np = temp;
+			}
+			E = C;
+			C = p;
 		}
-		E = C;
-		C = p;
 	}
 	int size()
 	{
@@ -281,8 +333,8 @@ public:
 		iter++;
 		for (;; iter++)
 		{
-			if (iter.ptr == C)return true;
-			if (iter.ptr == nullptr)return false;
+			if (iter.ptr() == C)return true;
+			if (iter.ptr() == nullptr)return false;
 		}
 	}
 
@@ -297,10 +349,10 @@ public:
 		for (int i = 0, t = len / 2; i < t; i++)
 		{
 			swap_inlist(*p, (*p)->next);
-			
+
 			p = &(*p)->next->next;
 		}
-		if (ringed )
+		if (ringed)
 		{
 			if (len % 2)(*p)->next = C;
 			else *p = C;
