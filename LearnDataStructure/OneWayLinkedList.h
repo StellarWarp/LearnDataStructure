@@ -18,7 +18,7 @@ class OneWayLinkedList
 	bool ringed = false;//环
 
 	//内部插入方法//向后插入
-	T* insert_inlist(const T& Data, Node*& node)
+	T* _insert_inlist(const T& Data, Node*& node)
 	{
 		Node* newnode = new Node;
 		newnode->Data = Data;
@@ -47,7 +47,7 @@ class OneWayLinkedList
 		}
 		return &newnode->Data;
 	}
-	T* insert(const T& Data, Node* p_node)
+	T* _insert(const T& Data, Node* p_node)
 	{
 		Node* newnode = new Node;
 		newnode->Data = Data;
@@ -77,7 +77,7 @@ class OneWayLinkedList
 		return &newnode->Data;
 	}
 	//内部交换函数
-	void swap(Node* a_prev, Node* b_prev)
+	void _swap(Node* a_prev, Node* b_prev)
 	{
 		if (b_prev->next == E)
 		{
@@ -96,7 +96,7 @@ class OneWayLinkedList
 		std::swap(a_prev->next->next, b_prev->next->next);
 
 	}
-	void swap_inlist(Node*& a, Node*& b)
+	void _swap_inlist(Node*& a, Node*& b)
 	{
 		if (b == E)E = a;
 		std::swap(a, b);
@@ -212,25 +212,25 @@ public:
 		}
 	}
 
-
-	//插入或在末尾增加//向后插入
+	//向后插入//默认首节点增加
 	T* insert(const T& Data, T* p = nullptr)
 	{
-		return insert(Data, (Node*)p);
+		return _insert(Data, (Node*)p);
 	}
+	//向后插入//使用迭代器
 	T* insert(const T& Data, iterator& iter)
 	{
-		return insert(Data, iter.ptr());
+		return _insert(Data, iter.ptr());
 	}
-	//用迭代器插入//向前插入
+	//向前插入//使用迭代器
 	T* append(const T& Data, iterator& iter)
 	{
-		return insert_inlist(Data, iter.ptr());
+		return _insert_inlist(Data, iter.ptr());
 	}
 	//末增
 	T* append(const T& Data)
 	{
-		return insert(Data, E);
+		return _insert(Data, E);
 	}
 
 
@@ -271,8 +271,7 @@ public:
 	{
 		setEmpty();
 	}
-
-
+	//反转
 	void reverse()
 	{
 		if (C)
@@ -292,6 +291,7 @@ public:
 			C = p;
 		}
 	}
+	//节点数量
 	int size()
 	{
 		return len;
@@ -337,7 +337,7 @@ public:
 			if (iter.ptr() == nullptr)return false;
 		}
 	}
-
+	//中间
 	T& middle()
 	{
 		return (*this)[len / 2];
@@ -348,7 +348,7 @@ public:
 		Node** p = &C;
 		for (int i = 0, t = len / 2; i < t; i++)
 		{
-			swap_inlist(*p, (*p)->next);
+			_swap_inlist(*p, (*p)->next);
 
 			p = &(*p)->next->next;
 		}

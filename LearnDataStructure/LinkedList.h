@@ -16,7 +16,7 @@ class LinkedList
 	bool ringed = false;//环
 
 	//内部插入方法//向后插入
-	T* insert_after(const T& Data, Node* p_node)
+	T* _InsertAfter(const T& Data, Node* p_node)
 	{
 		Node* newnode = new Node;
 		newnode->Data = Data;
@@ -44,7 +44,7 @@ class LinkedList
 		return &newnode->Data;
 	}
 	//内部插入方法//向前插入
-	T* insert_before(const T& Data, Node* p_node)
+	T* _InsertBefore(const T& Data, Node* p_node)
 	{
 		Node* newnode = new Node;
 		newnode->Data = Data;
@@ -71,7 +71,7 @@ class LinkedList
 		return &newnode->Data;
 	}
 	//内部交换函数
-	void swap(Node* a, Node* b)
+	void _swap(Node* a, Node* b)
 	{
 		if (b == E) E = a;
 		if (b->next) b->next->prev = a;
@@ -179,28 +179,28 @@ public:
 		}
 	}
 
-	//向前插入//在末尾增加
+	//向前插入//默认在末尾增加
 	T* append(const T& Data, T* p = nullptr)
 	{
 		if (p)
 		{
-			return insert_before(Data, (Node*)p);
+			return _InsertBefore(Data, (Node*)p);
 		}
-		return insert_after(Data, E);
+		return _InsertAfter(Data, E);
 	}
-	//用迭代器插入
+	//向前插入//用迭代器插入
 	T* append(const T& Data, const iterator& iter)
 	{
 		if (iter.ptr)
 		{
-			return insert_before(Data, iter.ptr);
+			return _InsertBefore(Data, iter.ptr);
 		}
-		return insert_after(Data, E);
+		return _InsertAfter(Data, E);
 	}
-	//向后插入
+	//向后插入//用迭代器插入
 	T* insert(const T& Data, const iterator& iter)
 	{
-		return insert_after(Data, iter.ptr);
+		return _InsertAfter(Data, iter.ptr);
 	}
 
 
@@ -233,6 +233,7 @@ public:
 	{
 		remove(iterator(Data));
 	}
+	//清空
 	void setEmpty()
 	{
 		while (C)
@@ -247,7 +248,7 @@ public:
 			remove(C);
 		}
 	}
-
+	//反转
 	void reverse()
 	{
 		if (C)
@@ -265,6 +266,7 @@ public:
 			}
 		}
 	}
+	//节点数量
 	int size()
 	{
 		return len;
@@ -285,6 +287,7 @@ public:
 		return searchList;
 	}
 	//环形链表操作
+	//置为循环链表
 	bool setRing()
 	{
 		if (E)
@@ -300,6 +303,7 @@ public:
 	{
 		return ringed;
 	}
+	//判断循环链表
 	bool isRing_ForceCheck()
 	{
 		if (E->next == nullptr && C->prev == nullptr)
@@ -315,6 +319,7 @@ public:
 			return true;
 		}
 	}
+	//中间数
 	T& middle()
 	{
 		return (*this)[len / 2];
@@ -325,7 +330,7 @@ public:
 		iterator iter = this->begin();
 		for (int i = 0, t = len / 2; i < t; i++)
 		{
-			swap(iter.ptr, iter.ptr->next);
+			_swap(iter.ptr, iter.ptr->next);
 			++iter;
 		}
 		if (ringed && len % 2)

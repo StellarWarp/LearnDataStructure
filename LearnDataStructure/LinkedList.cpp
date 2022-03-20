@@ -504,12 +504,11 @@ int main()
 	help += "	(12)remove ElementOrder/(left empty to use iterator)\n	(13)set_empty\n";
 	help += "	(14)reverse\n	(15)search value\n	(16)parity_swap\n	(17)set_ringed\n	(18)check_ring\n	(19)middle\n";
 	help += "IteratorOperation:\n	(20)iter++\n	(21)iter--\n	(22)iter+= num\n	(23)iter-= num\n	(24)reset\n";
-	help += "	    #can't go backward in OneWayLinkedList \n\n";
+	help += "	    # can't go backward in OneWayLinkedList \n\n";
 	cout << help;
 	cout << "tip: use [help] to call command list again \n\ncommand example:\n	switch           or   00\n	append 1 2 3 4   or   10 1 2 3 4\n	iter+= 2         or   22 2\n\n";
 	while (1)
 	{
-
 		control_O(list1);
 		control_D(list2);
 	}
