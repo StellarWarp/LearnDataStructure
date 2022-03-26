@@ -20,7 +20,7 @@ class Formula
 	struct OperateObject
 	{
 		//整数 浮点数 变量 一元运算符 二元运算符 括号 未知
-		enum OperateType { i, f, v, monadic, dyadic, parentheses, unknow } type;
+		enum OperateType { i, f, v, monadic, dyadic, parentheses, unknow } type = unknow;
 		string value;
 		OperateObject() {};
 		OperateObject(char*& exp_ptr)
@@ -143,7 +143,7 @@ public:
 	{
 		queue<OperateObject> formula_cache;//原公式缓存
 		stack<OperateObject> formula_stack;
-
+		OperateObject prevobj{};//前一对象
 		//括号数量检查
 		{
 			int p_l{};//左括号数量
@@ -211,13 +211,12 @@ public:
 						Expression.push(formula_stack.top());//输出函数
 					}
 				}
-				continue;
 			}
 			//运算符
 			else if (operateObject.type == OperateObject::dyadic)
 			{
 				//负号处理
-				if (Expression.empty() || formula_stack.empty() || formula_stack.top().value == "(")
+				if (prevobj.type == OperateObject::unknow|| prevobj.value == "(")
 				{
 					if (operateObject.value == "-")
 					{
@@ -239,7 +238,6 @@ public:
 					ProcessError("invalid usage of operator");
 					return;
 				}
-				continue;
 			}
 			//变量
 			else
@@ -254,8 +252,8 @@ public:
 						ProcessError("lack of operator");
 						return;
 					}
-				continue;
 			}
+			prevobj = operateObject;
 		}
 		//将栈中剩余的输出
 		while (!formula_stack.empty())

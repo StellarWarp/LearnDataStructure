@@ -15,20 +15,20 @@ class Stack
 			next = p;
 		}
 	};
-	node* C = nullptr;
+	node* Top = nullptr;
 	int len = 0;
 
 public:
 	//pushLStack
 	bool push(T n)
 	{
-		if (C)
+		if (Top)
 		{
-			C = new node(n, C);
+			Top = new node(n, Top);
 		}
 		else
 		{
-			C = new node(n, nullptr);
+			Top = new node(n, nullptr);
 		}
 		len++;
 		return true;
@@ -36,10 +36,10 @@ public:
 	//popLStack
 	bool pop()
 	{
-		if (C)
+		if (Top)
 		{
-			node* D = C;
-			C = C->next;
+			node* D = Top;
+			Top = Top->next;
 			delete D;
 			len--;
 			return true;
@@ -52,8 +52,8 @@ public:
 	//getTopLStack
 	T top()
 	{
-		if (C)
-			return C->data;
+		if (Top)
+			return Top->data;
 		else
 		{
 			cerr << "栈空" << endl;
@@ -64,7 +64,7 @@ public:
 	//isEmptyLStack
 	bool empty()
 	{
-		return !C;
+		return !Top;
 	}
 	//LStackLength
 	int size()
@@ -74,7 +74,7 @@ public:
 	//clearLStack
 	void clear()
 	{
-		while (C)
+		while (Top)
 		{
 			this->pop();
 		}
@@ -115,7 +115,7 @@ public:
 	};
 	iterator begin()
 	{
-		return iterator{ C };
+		return iterator{ Top };
 	}
 	iterator end()
 	{
@@ -124,7 +124,7 @@ public:
 	//打印
 	friend ostream& operator <<(ostream& out, Stack stack)
 	{
-		node* ptr = stack.C;
+		node* ptr = stack.Top;
 		while (ptr)
 		{
 			cout << ptr->data << "  ";
@@ -147,22 +147,22 @@ class Queue
 			next = p;
 		}
 	};
-	node* C = nullptr;
-	node* E = nullptr;
+	node* Front = nullptr;
+	node* Rear = nullptr;
 	int len = 0;
 
 public:
 	//EnLQueue
 	bool push(T n)
 	{
-		if (E)
+		if (Rear)
 		{
-			E->next = new node(n, nullptr);
-			E = E->next;
+			Rear->next = new node(n, nullptr);
+			Rear = Rear->next;
 		}
 		else
 		{
-			C = E = new node(n, nullptr);
+			Front = Rear = new node(n, nullptr);
 		}
 		len++;
 		return true;
@@ -170,13 +170,13 @@ public:
 	//DeLQueue
 	bool pop()
 	{
-		if (C)
+		if (Front)
 		{
-			node* D = C;
-			C = C->next;
-			if (!C)
+			node* D = Front;
+			Front = Front->next;
+			if (!Front)
 			{
-				E = nullptr;
+				Rear = nullptr;
 			}
 			delete D;
 			len--;
@@ -190,9 +190,9 @@ public:
 	//GetHeadLQueue
 	T front()
 	{
-		if (C)
+		if (Front)
 		{
-			return C->data;
+			return Front->data;
 		}
 		else
 		{
@@ -203,9 +203,9 @@ public:
 	//
 	T back()
 	{
-		if (E)
+		if (Rear)
 		{
-			return E->data;
+			return Rear->data;
 		}
 		else
 		{
@@ -217,7 +217,7 @@ public:
 	//IsEmptyLQueue
 	bool empty()
 	{
-		return !C;
+		return !Front;
 	}
 	//LengthLQueue
 	int size()
@@ -227,7 +227,7 @@ public:
 	//DeLQueue
 	void clear()
 	{
-		while (C)
+		while (Front)
 		{
 			this->pop();
 		}
@@ -268,7 +268,7 @@ public:
 	};
 	iterator begin()
 	{
-		return iterator{ C };
+		return iterator{ Front };
 	}
 	iterator end()
 	{
@@ -277,7 +277,7 @@ public:
 	//打印
 	friend ostream& operator <<(ostream& out, Queue queue)
 	{
-		node* ptr = queue.C;
+		node* ptr = queue.Front;
 		while (ptr)
 		{
 			cout << ptr->data << "  ";
