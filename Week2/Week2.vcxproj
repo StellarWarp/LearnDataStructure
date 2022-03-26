@@ -24,6 +24,7 @@
     <ProjectGuid>{5b3a2a43-cdc7-4bc1-b064-56af1c5a70f8}</ProjectGuid>
     <RootNamespace>Week2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Week2 Calculator</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
