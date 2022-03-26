@@ -6,9 +6,10 @@ Switch Container
 Shared Operation: 
 	push value
 	pop
+	empty
 	size
 	clear
-
+	
 	iter++
 	reset
 	change value

@@ -77,7 +77,7 @@ bool Top(T& container, vector<string>& commands)
 template<class T>
 bool Front(T& container, vector<string>& commands)
 {
-	if (commands[0] == "top" && commands.size() == 1)
+	if (commands[0] == "front" && commands.size() == 1)
 	{
 		if (!container.empty())
 		{
