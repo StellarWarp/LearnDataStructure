@@ -11,7 +11,7 @@ int main()
 		cin >> expression;
 		Formula test(expression);
 		if(test.Check())
-			cout << test.Calculate() << endl;
+			cout << test.Calculate() << endl<<endl;
 	}
 }
 
