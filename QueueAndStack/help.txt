@@ -1,0 +1,27 @@
+command list:
+
+Switch Container
+	switch
+
+Shared Operation: 
+	push value
+	pop
+	size
+	clear
+
+	iter++
+	reset
+	change value
+
+Unique Operation:
+	Stack:
+		top
+	Queue:
+		front
+
+tip: use [help] to call command list again
+
+command example:
+	switch
+	psuh 123
+	iter++

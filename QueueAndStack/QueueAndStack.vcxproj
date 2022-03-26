@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c8bc75ca-3602-4104-80b1-9c1231d00728}</ProjectGuid>
-    <RootNamespace>LearnDataStructure</RootNamespace>
+    <ProjectGuid>{ea8775ff-d531-4ce5-8ceb-4a5b6cd9bc97}</ProjectGuid>
+    <RootNamespace>QueueAndStack</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Week1 LinkedList</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,11 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LinkedList.cpp" />
+    <ClCompile Include="QueueAndStack.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LinkedList.h" />
-    <ClInclude Include="OneWayLinkedList.h" />
+    <ClInclude Include="..\LearnDataStructure\Input.h" />
+    <ClInclude Include="QueueAndStack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="help.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
