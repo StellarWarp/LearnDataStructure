@@ -4,6 +4,7 @@ command list:
 	open address(empty to use test.bin)
 	save
 	print
+	clear
 	input datalist
 	sort (method)
 		insert
