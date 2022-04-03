@@ -3,10 +3,10 @@
 #include <stack>
 #include <iostream>
 #include <string>
+#include <any>
 
 using namespace std;
-//公式类//目前只支持整型变量
-template<class VarT = int>
+
 class Formula
 {
 	enum sign
@@ -74,12 +74,12 @@ class Formula
 			}
 		}
 		OperateObject(string str) { char* p = &str[0]; *this = OperateObject(p); };
-		OperateObject(VarT var)
+		OperateObject(any var)
 		{
 			type = OperateObject::i;
 			value = to_string(var);
 		}
-		VarT GetValue()
+		any GetValue()
 		{
 			//溢出报错
 			string i_max = to_string(INT_MAX);
@@ -216,7 +216,7 @@ public:
 			else if (operateObject.type == OperateObject::dyadic)
 			{
 				//负号处理
-				if (prevobj.type == OperateObject::unknow|| prevobj.value == "(")
+				if (prevobj.type == OperateObject::unknow || prevobj.value == "(")
 				{
 					if (operateObject.value == "-")
 					{
@@ -265,7 +265,7 @@ public:
 		expression = exp;//储存原始数据
 	}
 
-	VarT Calculate()
+	any Calculate()
 	{
 		queue<OperateObject> exp = Expression;
 		stack<OperateObject> calculate_stack;
@@ -278,9 +278,9 @@ public:
 			}
 			else if (obj.type == OperateObject::dyadic)
 			{
-				VarT value1{};
-				VarT value2{};
-				VarT result{};
+				any value1{};
+				any value2{};
+				any result{};
 				value1 = calculate_stack.top().GetValue(); calculate_stack.pop();
 				value2 = calculate_stack.top().GetValue(); calculate_stack.pop();
 				if (obj.value == "+")
@@ -300,7 +300,7 @@ public:
 					if (value1 == 0)
 					{
 						ProcessError("division by zero");
-						return VarT{};
+						return any{};
 					}
 					result = value2 / value1;
 				}
@@ -308,8 +308,8 @@ public:
 			}
 			else if (obj.type == OperateObject::monadic)
 			{
-				VarT value = calculate_stack.top().GetValue(); calculate_stack.pop();
-				VarT result{};
+				any value = calculate_stack.top().GetValue(); calculate_stack.pop();
+				any result{};
 				if (obj.value == "-")
 				{
 					result = -value;
@@ -323,7 +323,7 @@ public:
 		else
 		{
 			ProcessError("empty expression");
-			return VarT{};
+			return any{};
 		}
 	}
 };
