@@ -4,6 +4,33 @@
 #include<stack>
 #include<queue>
 using namespace std;
+//二分搜索
+template<class T>//当value大于最大值时，返回最大index
+T* DilitarySearch_up(T* low, T* high, T value)
+{
+	if (value >= *high)
+	{
+		return high;
+	}
+	if (value <= *low)
+	{
+		return low;
+	}
+	T* p;//搜索位置
+	T cvalue;
+	T* a = low;
+	T* b = high;
+
+	while (1)
+	{
+		p = a + (b - a) / 2;
+		cvalue = *p;
+
+		if (a == p) return a+1;
+		else if (cvalue <= value) a = p;
+		else if (cvalue > value) b = p;
+	}
+}
 
 /**
  *  @name        : void insertSort(int *a,int n);
@@ -21,10 +48,11 @@ void insertSort(T a[], int n)
 		if (*p < *(p - 1))
 		{
 			T* p1 = a;
-			while (*p1 <= *p)
+			/*while (*p1 <= *p)
 			{
 				p1++;
-			}
+			}*/
+			p1 = DilitarySearch_up(a, p - 1, *p);
 			T temp = *p;
 			//移动
 			for (T* p2 = p; p2 != p1; p2--)
@@ -285,7 +313,6 @@ void RadixCountSort(T a[], int size)
 		for (int i = 1; i < base_num; i++)
 			counter[i] = counter[i - 1] + counter[i];
 		unit<T>** p = ordering_list;
-		//unit<T>* (*test)[10] = (unit<T>*(*)[10])ordering_list;
 		for (int i = 0; i < size; i++)
 		{
 			unsigned char k = ordering_list[i]->get();
@@ -312,7 +339,7 @@ void RadixCountSort(T a[], int size)
 			}
 		}
 		memcpy(a, b + filp_pos, sizeof(T) * (size - filp_pos));//负数
-		memcpy(a + (size - filp_pos) , b, sizeof(T) * filp_pos);//正数
+		memcpy(a + (size - filp_pos), b, sizeof(T) * filp_pos);//正数
 	}
 	else
 		memcpy(a, b, sizeof(T) * size);

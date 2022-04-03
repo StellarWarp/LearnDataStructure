@@ -53,7 +53,7 @@ void  LevelTest(int maxlevel, int test_times)
 	{
 		auto TestArray = LevelArrays;
 		cout << "\n" << "insertSort" << endl;
-		for (int i = 0; i < 3 && i < Level.size(); i++)
+		for (int i = 0; i < 4 && i < Level.size(); i++)
 		{
 			cout << format("Test times : {}  level {} : {:8}	", test_times, i + 1, Level[i]);
 			Timer(true);
@@ -215,12 +215,14 @@ void Control()
 }
 int main()
 {
-	/*LevelTest(5, 1);
-	LevelTest(2, 10000);*/
+	LevelTest(5, 1);
+	LevelTest(2, 10000);
 
 	init_help();
 	cout << help;
 	Control();
 
+	//int a[] = { 10,9,2 ,5, 3,12,1,11,7,0,8 ,4,6 };
+	//insertSort(a, 13);
 }
 
